@@ -2,49 +2,64 @@
   <div>
     <Row class="home-row">
       <Col>
-        设备串口：
-        <Select :disabled="serialIsDisabled" v-model="comSelected" style="width:80px">
-          <Option v-for="item in comNumber" :value="`COM${item}`" :label="`COM${item}`"></Option>
-        </Select>
+        Serial:
+        <AutoComplete
+          :disabled="serialIsDisabled"
+          v-model="comSelected"
+          :data="coms"
+          placeholder="COM"
+          style="width:60px"
+        ></AutoComplete>
         <Divider type="vertical"/>
         <span>
-          波特率：
+          Baudrate:
           <Input :disabled="serialIsDisabled" v-model="baudRate" style="width: 60px"/>
         </span>
         <Divider type="vertical"/>
         <span>
-          打包间隔(ms)：
+          Interval(ms):
           <Input :disabled="serialIsDisabled" v-model="packageTime" style="width: 60px"/>
         </span>
-        <Button type="primary" style="margin-left: 10px;" @click="handleSerial">{{serialState}}</Button>
+        <Divider type="vertical"/>Type:
+        <AutoComplete
+          :disabled="netIsDisabled"
+          v-model="dataType"
+          :data="dataTypes"
+          placeholder="Data Type"
+          style="width:80px"
+        ></AutoComplete>
+        <Button
+          type="primary"
+          style="float: right; margin-right: 5px;"
+          @click="handleSerial"
+        >{{serialState}}</Button>
       </Col>
     </Row>
     <Row class="home-row">
       <Col>
-        <span>
-          本地地址：
-          <AutoComplete
-            :disabled="netIsDisabled"
-            v-model="hostIp"
-            :data="hostIps"
-            placeholder="host"
-            style="width:120px"
-          ></AutoComplete>：
-          <Input :disabled="netIsDisabled" v-model="hostPort" style="width: 60px"/>
-        </span>
+        Caster Address:
+        <AutoComplete
+          :disabled="netIsDisabled"
+          v-model="casterIp"
+          :data="casterIps"
+          placeholder="Caster IP"
+          style="width:120px"
+        ></AutoComplete>
         <Divider type="vertical"/>
-        <span>
-          服务器地址：
-          <AutoComplete
-            :disabled="netIsDisabled"
-            v-model="serverIp"
-            :data="hostIps"
-            placeholder="server"
-            style="width:120px"
-          ></AutoComplete>：
-          <Input :disabled="netIsDisabled" v-model="serverPort" style="width: 60px"/>
-        </span>
-        <Button type="primary" style=" margin-left: 10px;" @click="handleNet">{{netState}}</Button>
+        <Input :disabled="netIsDisabled" v-model="casterPort" style="width: 60px"/>
+        <Button
+          type="primary"
+          style="float: right; margin-right: 5px;"
+          @click="handleNet"
+        >{{netState}}</Button>
+      </Col>
+      <Col style="margin-top: 5px">
+        Mountpoint:
+        <Input :disabled="netIsDisabled" v-model="mountpoint" style="width: 100px"/>
+        <Divider type="vertical"/>User-ID:
+        <Input :disabled="netIsDisabled" v-model="userId" style="width: 100px"/>
+        <Divider type="vertical"/>Password:
+        <Input :disabled="netIsDisabled" v-model="password" style="width: 100px"/>
       </Col>
     </Row>
     <Row class="home-row">
@@ -60,7 +75,7 @@
             <Checkbox label="timestamp">Timestamp</Checkbox>
           </CheckboxGroup>
         </span>
-        <span style=" float: right; margin-right: 10px;">
+        <span style=" float: right; margin-right: 5px;">
           <Button type="success" @click="displayPause">{{displayState}}</Button>
           <Button style="margin-left: 10px;" type="warning" @click="displayClear">清空</Button>
         </span>

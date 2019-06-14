@@ -6,14 +6,29 @@ export default {
   name: 'home',
   data() {
     return {
-      comSelected: '',
-      baudRate: 115200,
+      comSelected: 'COM7',
+      coms: [
+        'COM1',
+        'COM2',
+        'COM3',
+        'COM4',
+        'COM5',
+        'COM6',
+        'COM7',
+        'COM8',
+        'COM9',
+        'COM10'
+      ],
+      baudRate: 9600,
       packageTime: 50,
-      hostIp: '127.0.0.1',
-      hostIps: [],
-      hostPort: 8080,
-      serverIp: '47.92.151.105',
-      serverPort: 8000,
+      dataTypes: ['ublox'],
+      dataType: 'ublox',
+      casterIp: '47.92.151.105',
+      casterIps: [],
+      casterPort: 8010,
+      mountpoint: 'nanjing',
+      userId: '',
+      password: '12345678',
       checkedDisplay: ['hex']
     }
   },
@@ -31,7 +46,7 @@ export default {
     let netParams = os.networkInterfaces()
     collection.forEach(netParams, value => {
       let temp = collection.filter(value, { family: 'IPv4' })
-      if (temp[0].address) this.hostIps.push(temp[0].address)
+      if (temp[0].address) this.casterIps.push(temp[0].address)
     })
     // 监听错误事件
     EventBus.$on('message-box', value => {
@@ -86,24 +101,21 @@ export default {
       this.actionSerial({
         port: this.comSelected,
         baudRate: Number(this.baudRate),
-        packageTime: Number(this.packageTime) < 50 ? 50 : this.packageTime
+        packageTime: Number(this.packageTime) < 50 ? 50 : this.packageTime,
+        dataType: this.dataType
       })
     },
     handleNet() {
-      if (
-        !this.hostIp ||
-        !this.hostPort ||
-        !this.serverIp ||
-        !this.serverPort
-      ) {
-        this.$Message.warning('请填写网络参数')
+      if (!this.casterIp || !this.casterPort || !this.mountpoint) {
+        this.$Message.warning('请填写服务器参数')
         return
       }
       this.actionNet({
-        hostIp: this.hostIp,
-        hostPort: this.hostPort,
-        serverIp: this.serverIp,
-        serverPort: this.serverPort
+        casterIp: this.casterIp,
+        casterPort: this.casterPort,
+        mountpoint: this.mountpoint,
+        userId: this.userId,
+        password: this.password
       })
     },
     checkedChange(value) {
