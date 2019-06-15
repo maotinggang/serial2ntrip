@@ -1664,6 +1664,13 @@ babylon@^6.18.0:
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.18.0.tgz#af2f3b88fa6f5c1e4c634d1a0f8eac4f55b395e3"
   integrity sha512-q/UEjfGJ2Cm3oKV71DJz9d25TPnq5rhBVL2Q4fA5wcC3jcrdn7+SssEybFIxwAvvP+YCsCYNKughoF33GxgycQ==
 
+backoff@~2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/backoff/-/backoff-2.5.0.tgz#f616eda9d3e4b66b8ca7fca79f695722c5f8e26f"
+  integrity sha1-9hbtqdPktmuMp/ynn2lXIsX44m8=
+  dependencies:
+    precond "0.2"
+
 balanced-match@^0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-0.4.2.tgz#cb3f3e3c732dc0f01ee70b403f302e61d7709838"
@@ -6198,6 +6205,11 @@ neo-async@^2.5.0:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.1.tgz#ac27ada66167fa8849a6addd837f6b189ad2081c"
   integrity sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw==
 
+net-socket-reconnect@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/net-socket-reconnect/-/net-socket-reconnect-0.0.9.tgz#af84d2675ca15c71f08e2c637b6988f14e41ee45"
+  integrity sha1-r4TSZ1yhXHHwjixje2mI8U5B7kU=
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
@@ -7214,6 +7226,11 @@ prebuild-install@^5.2.1:
     tunnel-agent "^0.6.0"
     which-pm-runs "^1.0.0"
 
+precond@0.2:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/precond/-/precond-0.2.3.tgz#aa9591bcaa24923f1e0f4849d240f47efc1075ac"
+  integrity sha1-qpWRvKokkj8eD0hJ0kD0fvwQdaw=
+
 prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
@@ -7538,6 +7555,20 @@ recast@~0.11.12:
     esprima "~3.1.0"
     private "~0.1.5"
     source-map "~0.5.0"
+
+reconnect-core@~1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/reconnect-core/-/reconnect-core-1.2.0.tgz#2af25f6fe2f11f22819fcbf489c5168d496f0f0f"
+  integrity sha1-KvJfb+LxHyKBn8v0icUWjUlvDw8=
+  dependencies:
+    backoff "~2.5.0"
+
+reconnect-net@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/reconnect-net/-/reconnect-net-1.1.1.tgz#b177d0f548f22ee46ccde19a38c65d2b255ea37b"
+  integrity sha1-sXfQ9UjyLuRszeGaOMZdKyVeo3s=
+  dependencies:
+    reconnect-core "~1.2.0"
 
 redent@^1.0.0:
   version "1.0.0"

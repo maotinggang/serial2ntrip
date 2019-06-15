@@ -20,7 +20,9 @@ export default {
         'COM10'
       ],
       baudRate: 9600,
+      baudRates: [4800, 9600, 115200],
       packageTime: 50,
+      packageTimes: [50, 100, 200, 500, 1000],
       dataTypes: ['ublox'],
       dataType: 'ublox',
       casterIp: '47.92.151.105',

@@ -10,19 +10,25 @@
           placeholder="COM"
           style="width:60px"
         ></AutoComplete>
-        <Divider type="vertical"/>
-        <span>
-          Baudrate:
-          <Input :disabled="serialIsDisabled" v-model="baudRate" style="width: 60px"/>
-        </span>
-        <Divider type="vertical"/>
-        <span>
-          Interval(ms):
-          <Input :disabled="serialIsDisabled" v-model="packageTime" style="width: 60px"/>
-        </span>
+        <Divider type="vertical"/>Baudrate:
+        <AutoComplete
+          :disabled="serialIsDisabled"
+          v-model="baudRate"
+          :data="baudRates"
+          placeholder="Baud Rate"
+          style="width:60px"
+        ></AutoComplete>
+        <Divider type="vertical"/>Interval(ms):
+        <AutoComplete
+          :disabled="serialIsDisabled"
+          v-model="packageTime"
+          :data="packageTimes"
+          placeholder="Interval Time"
+          style="width:60px"
+        ></AutoComplete>
         <Divider type="vertical"/>Type:
         <AutoComplete
-          :disabled="netIsDisabled"
+          :disabled="serialIsDisabled"
           v-model="dataType"
           :data="dataTypes"
           placeholder="Data Type"

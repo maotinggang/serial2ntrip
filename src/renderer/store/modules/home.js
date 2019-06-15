@@ -1,7 +1,7 @@
 import { EventBus } from '../../lib/event'
 import { parse } from '../../lib/parse'
 const collection = require('lodash/collection')
-const net = require('net')
+var reconnect = require('net-socket-reconnect')
 const SerialPort = require('serialport')
 const moment = require('moment')
 const state = {
@@ -64,7 +64,6 @@ const mutations = {
 
 let port
 let socket
-// let netReconnect
 let isConnect
 const actions = {
   actionWindowSize({ commit }, value) {
@@ -94,6 +93,7 @@ const actions = {
   actionSerial({ commit, state }, value) {
     if (state.serialState === '已连接') {
       port.close()
+      port = null
       commit('SERIAL_STATE', '未连接')
       return
     }
@@ -114,13 +114,14 @@ const actions = {
     // Read data that is available but keep the stream in "paused mode"
     port.on('readable', () => {
       setTimeout(() => {
-        // data process//TODO 循环获取
         let msg = port.read()
-        if (msg && socket && !socket.destroyed) {
+        // data process//TODO 循环获取,需要更好的算法
+        if (isConnect && msg) {
           msg = parse(value.dataType, msg)
           collection.forEach(msg, value => {
             socket.write(value, err => {
-              if (!err) commit('DISPLAY_CONTENT', { type: 'Send', data: value })
+              if (err) console.error(`socket write:${err}`)
+              else commit('DISPLAY_CONTENT', { type: 'Send', data: value })
             })
           })
         }
@@ -128,53 +129,74 @@ const actions = {
     })
   },
   actionNet({ commit, state }, value) {
-    isConnect = false
-    // clearInterval(netReconnect)
-    if (state.netState === '已开启') {
-      socket.destroy()
-      commit('NET_STATE', '未开启')
-      return
-    }
+    // if (state.netState === '已开启') {
+    //   isConnect = false
+    //   socket.stopReconnect()
+    //   socket.destroy()
+    //   commit('NET_STATE', '未开启')
+    //   return
+    // }
     commit('NET_STATE', '已开启')
-    let login = `SOURCE ${value.password} ${value.mountpoint}\r\n`
-    socket = net.createConnection(value.casterPort, value.casterIp, () => {
-      socket.write(login)
+    socket = reconnect({
+      port: value.casterPort,
+      host: value.casterIp,
+      reconnectInterval: 3000,
+      reconnectOnError: true
+      // reconnectOnCreate: true,
+      // reconnectOnClose: true,
+      // reconnectOnEnd: true,
+      // reconnectTimes: 1000
     })
-    socket.on('error', err => {
-      EventBus.$emit('message-box', `错误:${err}`)
-      commit('NET_STATE', '未开启')
-      socket.destroy()
-      isConnect = false
-    })
-    socket.on('data', msg => {
-      if (!isConnect) {
-        if (msg.toString().includes('ICY 200 OK')) {
+    socket.on('data', data => {
+      if (isConnect) {
+        if (port && port.isOpen) {
+          port.write(data, err => {
+            if (err) console.error(`port write:${err}`)
+            else commit('DISPLAY_CONTENT', { type: 'Receive', data: data })
+          })
+        }
+      } else {
+        if (data.toString().includes('ICY 200 OK')) {
           isConnect = true
           EventBus.$emit('message-box', '连接服务器成功')
         } else {
           isConnect = false
-          EventBus.$emit('message-box', `连接服务器失败:${msg.toString()}`)
+          EventBus.$emit('message-box', `连接服务器失败:${data.toString()}`)
         }
-      } else if (port && port.isOpen) {
-        port.write(msg, err => {
-          if (err) console.error(`port-write:${err}`)
-          else commit('DISPLAY_CONTENT', { type: 'Receive', data: msg })
-        })
       }
     })
-    // netReconnect = setInterval(() => {
-    //   console.log(isConnect)
+    socket.on('connect', () => {
+      socket.write(`SOURCE ${value.password} ${value.mountpoint}\r\n`)
+    })
 
-    //   if (!isConnect) {
-    //     EventBus.$emit('message-box', '服务器重连')
-    //     socket = net.createConnection(value.casterPort, value.casterIp, () => {
-    //       socket.write(login)
-    //     })
-    //     socket.on('error', () => {
-    //       // socket.destroy()
-    //     })
+    // socket = net.createConnection(value.casterPort, value.casterIp, () => {
+    //   socket.write(login)
+    // })
+    // socket.on('error', err => {
+    //   EventBus.$emit('message-box', `错误:${err}`)
+    //   commit('NET_STATE', '未开启')
+    //   socket.destroy()
+    //   socket = null
+    //   isConnect = false
+    // })
+    // socket.on('data', msg => {
+    //   if (isConnect) {
+    //     if (port && port.isOpen) {
+    //       port.write(msg, err => {
+    //         if (err) console.error(`port write:${err}`)
+    //         else commit('DISPLAY_CONTENT', { type: 'Receive', data: msg })
+    //       })
+    //     }
+    //   } else {
+    //     if (msg.toString().includes('ICY 200 OK')) {
+    //       isConnect = true
+    //       EventBus.$emit('message-box', '连接服务器成功')
+    //     } else {
+    //       isConnect = false
+    //       EventBus.$emit('message-box', `连接服务器失败:${msg.toString()}`)
+    //     }
     //   }
-    // }, 5000)
+    // })
   }
 }
 
