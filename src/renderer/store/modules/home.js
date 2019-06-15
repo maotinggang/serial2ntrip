@@ -136,7 +136,7 @@ const actions = {
       return
     }
     commit('NET_STATE', '已开启')
-    socket = net.connect(8010, 'localhost') // reconnect
+    socket = net.connect(Number(value.casterPort), value.casterIp) // reconnect
     socket.on('data', data => {
       if (isConnect) {
         if (port && port.isOpen) {
