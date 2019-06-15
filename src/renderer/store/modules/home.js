@@ -65,6 +65,7 @@ const mutations = {
 let port
 let socket
 let isConnect
+let sendInterval
 const actions = {
   actionWindowSize({ commit }, value) {
     commit('WINDOW_SIZE', value)
@@ -94,6 +95,7 @@ const actions = {
     if (state.serialState === '已连接') {
       port.close()
       port = null
+      clearInterval(sendInterval)
       commit('SERIAL_STATE', '未连接')
       return
     }
@@ -113,20 +115,24 @@ const actions = {
     })
     // Read data that is available but keep the stream in "paused mode"
     // TODO 循环获取,需要更好的算法
-    port.on('readable', () => {
-      setTimeout(() => {
-        let msg = port.read()
-        if (isConnect && msg) {
-          msg = parse(value.dataType, msg) // data process
-          collection.forEach(msg, value => {
-            socket.write(value, err => {
-              if (err) console.error(`socket write:${err}`)
-              else commit('DISPLAY_CONTENT', { type: 'Send', data: value })
-            })
+    let data
+    sendInterval = setInterval(() => {
+      let msg = port.read()
+      if (msg) {
+        if (data) data = Buffer.concat([data, msg])
+        else data = msg
+      }
+      if (isConnect && data && (!msg || data.length > 1024)) {
+        let values = parse(value.dataType, data) // data process
+        data = null
+        collection.forEach(values, value => {
+          socket.write(value, err => {
+            if (err) console.error(`socket write:${err}`)
+            else commit('DISPLAY_CONTENT', { type: 'Send', data: value })
           })
-        }
-      }, value.packageTime)
-    })
+        })
+      } else if (data && data.length > 1024) data = null
+    }, value.packageTime)
   },
   actionNet({ commit, state }, value) {
     if (state.netState === '已开启') {
