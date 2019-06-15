@@ -90,7 +90,7 @@
     <Row style=" position: fixed;">
       <Col
         id="infos-display"
-        :style="{wordWrap: 'break-word',wordBreak: 'break-all',padding:'5px',overflow: 'auto',height:windowSize.height-130+'px',width:windowSize.width+'px'}"
+        :style="{wordWrap: 'break-word',wordBreak: 'break-all',padding:'5px',overflow: 'auto',height:windowSize.height-165+'px',width:windowSize.width+'px'}"
       >
         <p style="font-size: 15px;" v-for="item in infos" :key="item.id">{{ item }}</p>
       </Col>

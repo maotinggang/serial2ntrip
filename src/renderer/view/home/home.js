@@ -6,7 +6,7 @@ export default {
   name: 'home',
   data() {
     return {
-      comSelected: 'COM7',
+      comSelected: 'COM1',
       coms: [
         'COM1',
         'COM2',
@@ -25,7 +25,8 @@ export default {
       packageTimes: [50, 100, 200, 500, 1000],
       dataTypes: ['ublox'],
       dataType: 'ublox',
-      casterIp: '47.92.151.105',
+      // casterIp: '47.92.151.105',
+      casterIp: '127.0.0.1',
       casterIps: [],
       casterPort: 8010,
       mountpoint: 'nanjing',
