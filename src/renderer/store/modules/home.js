@@ -114,7 +114,7 @@ const actions = {
       else commit('SERIAL_STATE', '已连接')
     })
     // Read data that is available but keep the stream in "paused mode"
-    // TODO 循环获取,需要更好的算法
+    // TODO 循环解析方法,需要更好的算法
     let data
     sendInterval = setInterval(() => {
       let msg = port.read()
@@ -123,9 +123,9 @@ const actions = {
         else data = msg
       }
       if (isConnect && data && (!msg || data.length > 1024)) {
-        let values = parse(value.dataType, data) // data process
-        data = null
-        collection.forEach(values, value => {
+        let ret = parse(value.dataType, data) // data process
+        data = ret.residual // 剩余长度不过部分
+        collection.forEach(ret.data, value => {
           socket.write(value, err => {
             if (err) console.error(`socket write:${err}`)
             else commit('DISPLAY_CONTENT', { type: 'Send', data: value })
