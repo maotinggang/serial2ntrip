@@ -124,12 +124,18 @@ const actions = {
       }
       if (isConnect && data && (!msg || data.length > 1024)) {
         let ret = parse(value.dataType, data) // data process
-        data = ret.residual // 剩余长度不过部分
+        // 剩余长度部分,超时剩余部分清空
+        if (msg) data = ret.residual
+        else data = null
         collection.forEach(ret.data, value => {
-          socket.write(value, err => {
-            if (err) console.error(`socket write:${err}`)
-            else commit('DISPLAY_CONTENT', { type: 'Send', data: value })
-          })
+          if (value) {
+            setTimeout(() => {
+              socket.write(value, err => {
+                if (err) console.error(`socket write:${err}`)
+                else commit('DISPLAY_CONTENT', { type: 'Send', data: value })
+              })
+            }, value.length / 20) // 延时，保证每包数据独立发送
+          }
         })
       } else if (data && data.length > 1024) data = null
     }, value.packageTime)

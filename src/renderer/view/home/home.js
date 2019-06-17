@@ -1,33 +1,23 @@
 import { mapState, mapActions } from 'vuex'
 import { EventBus } from '@/lib/event'
 const collection = require('lodash/collection')
+const SerialPort = require('serialport')
 const os = require('os')
 export default {
   name: 'home',
   data() {
     return {
       comSelected: 'COM1',
-      coms: [
-        'COM1',
-        'COM2',
-        'COM3',
-        'COM4',
-        'COM5',
-        'COM6',
-        'COM7',
-        'COM8',
-        'COM9',
-        'COM10'
-      ],
+      coms: [],
       baudRate: 9600,
       baudRates: [4800, 9600, 115200],
-      packageTime: 50,
+      packageTime: 100,
       packageTimes: [50, 100, 200, 500, 1000],
       dataTypes: ['ublox'],
       dataType: 'ublox',
       casterIp: '47.92.151.105',
       // casterIp: '127.0.0.1',
-      casterIps: [],
+      casterIps: ['47.92.151.105'],
       casterPort: 8010,
       mountpoint: 'nanjing',
       userId: '',
@@ -45,7 +35,16 @@ export default {
     }
   },
   created() {
-    // 读取设备ip
+    // 获取COM
+    setInterval(() => {
+      SerialPort.list().then(res => {
+        this.coms = []
+        collection.forEach(res, value => {
+          this.coms.push(value.comName)
+        })
+      })
+    }, 3000)
+    // 读取ip
     let netParams = os.networkInterfaces()
     collection.forEach(netParams, value => {
       let temp = collection.filter(value, { family: 'IPv4' })
