@@ -117,6 +117,7 @@ const actions = {
     // TODO 循环解析方法,需要更好的算法
     let data
     sendInterval = setInterval(() => {
+      if (!port) return
       let msg = port.read()
       if (msg) {
         if (data) data = Buffer.concat([data, msg])

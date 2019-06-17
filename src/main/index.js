@@ -52,6 +52,8 @@ app.on('activate', () => {
   }
 })
 
+app.commandLine.appendSwitch('disable-background-timer-throttling') // 避免最小化停止运行
+
 /**
  * Auto Updater
  *
