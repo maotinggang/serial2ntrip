@@ -22,28 +22,27 @@ const ublox = data => {
   for (let i = 1; i < data.length; i++) {
     if (data[i - 1] === 0xb5 && data[i] === 0x62) {
       // self
-      try {
-        let length = data.readUInt16LE(i + 3)
-        if (
-          checkSum(
-            data[i + 1 + 4 + length],
-            data[i + 1 + 4 + length + 1],
-            data,
-            i + 1,
-            i + 1 + 4 + length
-          )
-        ) {
-          let buf = Buffer.alloc(8 + length)
-          data.copy(buf, 0, i - 1, i + 1 + 4 + length + 2)
-          if (ublox) ublox = Buffer.concat([ublox, buf])
-          else ublox = buf
-          i += 1 + 4 + length + 2 - 1
-        }
-      } catch (error) {
-        // 溢出处理
+      let length = data.readUInt16LE(i + 3)
+      // 检测剩余长度是否足够，防止溢出
+      if (6 + length + 2 > data.length - (i - 1)) {
         residual = Buffer.alloc(data.length - (i - 1))
         data.copy(residual, 0, i - 1, data.length)
         break
+      }
+      if (
+        checkSum(
+          data[i + 1 + 4 + length],
+          data[i + 1 + 4 + length + 1],
+          data,
+          i + 1,
+          i + 1 + 4 + length
+        )
+      ) {
+        let buf = Buffer.alloc(8 + length)
+        data.copy(buf, 0, i - 1, i + 1 + 4 + length + 2)
+        if (ublox) ublox = Buffer.concat([ublox, buf])
+        else ublox = buf
+        i += 1 + 4 + length + 2 - 1
       }
     } else if (data[i - 1] === 0x24 && data[i] === 0x47) {
       // nmea
@@ -61,8 +60,8 @@ const ublox = data => {
         else nmea = buf
         break
       } else if (i === data.length - 1 && !residual) {
-        residual = Buffer.alloc(i + 1 - value)
-        data.copy(residual, 0, value, i + 1)
+        residual = Buffer.alloc(data.length - value)
+        data.copy(residual, 0, value, data.length)
       }
     }
   })
