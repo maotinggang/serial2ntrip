@@ -113,8 +113,6 @@ const actions = {
       if (err) EventBus.$emit('message-box', '打开串口失败：' + err)
       else commit('SERIAL_STATE', '已连接')
     })
-    // Read data that is available but keep the stream in "paused mode"
-    // TODO 循环解析方法,需要更好的算法
     let data
     sendInterval = setInterval(() => {
       if (!port) return
@@ -124,18 +122,18 @@ const actions = {
         else data = msg
       }
       if (isConnect && data && (!msg || data.length > 1024)) {
-        let ret = parse(value.dataType, data) // data process
+        let ret = parse(value.dataType, data) // FIXME 循环解析方法
         // 剩余长度部分,超时剩余部分清空
         if (msg) data = ret.residual
         else data = null
-        collection.forEach(ret.data, value => {
+        collection.forEach(ret.data, (value, key) => {
           if (value) {
             setTimeout(() => {
               socket.write(value, err => {
                 if (err) console.error(`socket write:${err}`)
                 else commit('DISPLAY_CONTENT', { type: 'Send', data: value })
               })
-            }, value.length / 20) // 延时，保证每包数据独立发送
+            }, key * 10) // 延时，保证每包数据独立发送
           }
         })
       } else if (data && data.length > 1024) data = null

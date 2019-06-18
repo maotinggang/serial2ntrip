@@ -103,7 +103,7 @@ export default {
       this.actionSerial({
         port: this.comSelected,
         baudRate: Number(this.baudRate),
-        packageTime: Number(this.packageTime) < 50 ? 50 : this.packageTime,
+        packageTime: Number(this.packageTime),
         dataType: this.dataType
       })
     },
