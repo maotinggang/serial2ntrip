@@ -133,7 +133,7 @@ const actions = {
                 if (err) console.error(`socket write:${err}`)
                 else commit('DISPLAY_CONTENT', { type: 'Send', data: value })
               })
-            }, key * 10) // 延时，保证每包数据独立发送
+            }, key * 20) // 延时，保证每包数据独立发送
           }
         })
       } else if (data && data.length > 1024) data = null
