@@ -1,6 +1,6 @@
 'use strict'
-
-import { app, BrowserWindow } from 'electron'
+import path from 'path'
+import { app, BrowserWindow, Menu, Tray } from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -17,7 +17,7 @@ const winURL =
   process.env.NODE_ENV === 'development'
     ? `http://localhost:9080`
     : `file://${__dirname}/index.html`
-
+let tray
 function createWindow() {
   /**
    * Initial window options
@@ -36,6 +36,31 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+  // 关闭按钮最小化到托盘
+  mainWindow.on('close', e => {
+    if (mainWindow.isMinimized()) {
+      mainWindow = null
+    } else {
+      e.preventDefault()
+      mainWindow.minimize()
+      mainWindow.hide()
+    }
+  })
+  tray = new Tray(path.join(__static, 'icon.ico')) // static 文件夹资源打包可用
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'quit',
+      click: () => {
+        app.quit()
+        app.quit()
+      }
+    }
+  ])
+  tray.setToolTip('Serial-NTRIP')
+  tray.on('click', function() {
+    mainWindow.show()
+  })
+  tray.setContextMenu(contextMenu)
 }
 
 app.on('ready', createWindow)
