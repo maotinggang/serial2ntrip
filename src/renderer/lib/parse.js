@@ -22,9 +22,14 @@ const ublox = data => {
   for (let i = 1; i < data.length; i++) {
     if (data[i - 1] === 0xb5 && data[i] === 0x62) {
       // self
-      let length = data.readUInt16LE(i + 3)
       // 检测剩余长度是否足够，防止溢出
-      if (6 + length + 2 > data.length - (i - 1)) {
+      if (i - 1 + 2 + 4 + 2 > data.length) {
+        residual = Buffer.alloc(data.length - (i - 1))
+        data.copy(residual, 0, i - 1, data.length)
+        break
+      }
+      let length = data.readUInt16LE(i + 3)
+      if (i - 1 + 6 + length + 2 > data.length) {
         residual = Buffer.alloc(data.length - (i - 1))
         data.copy(residual, 0, i - 1, data.length)
         break
@@ -74,13 +79,13 @@ const ublox = data => {
  * @param {Byte} checkB
  * @param {Buffer} data
  * @param {Number} start
- * @param {Number} length
+ * @param {Number} end
  * @returns {Boolean} res
  */
-const checkSum = (checkA, checkB, data, start, length) => {
+const checkSum = (checkA, checkB, data, start, end) => {
   let ckA = 0x00
   let ckB = 0x00
-  for (let i = start; i < length; i++) {
+  for (let i = start; i < end; i++) {
     ckA = ckA + data[i]
     ckB = ckB + ckA
   }

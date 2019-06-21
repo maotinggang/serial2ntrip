@@ -136,7 +136,7 @@ const actions = {
             }, key * 20) // 延时，保证每包数据独立发送
           }
         })
-      } else if (data && data.length > 1024) data = null
+      } else if (data && data.length > 2048) data = null
     }, value.packageTime)
   },
   actionNet({ commit, state }, value) {

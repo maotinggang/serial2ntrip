@@ -11,7 +11,7 @@ export default {
       coms: [],
       baudRate: 9600,
       baudRates: [4800, 9600, 115200],
-      packageTime: 100,
+      packageTime: 50,
       packageTimes: [50, 100, 200, 500, 1000],
       dataTypes: ['ublox'],
       dataType: 'ublox',
