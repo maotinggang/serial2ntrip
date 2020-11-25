@@ -4574,9 +4574,9 @@ header-case@^1.0.0:
     upper-case "^1.1.3"
 
 highlight.js@^9.3.0:
-  version "9.15.8"
-  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.15.8.tgz#f344fda123f36f1a65490e932cf90569e4999971"
-  integrity sha512-RrapkKQWwE+wKdF73VsOa2RQdIoO3mxwJ4P8mhbI6KYJUraUHRKM5w5zQQKXNk0xNL4UVRdulV9SBJcmzJNzVA==
+  version "9.18.5"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.18.5.tgz#d18a359867f378c138d6819edfc2a8acd5f29825"
+  integrity sha512-a5bFyofd/BHCX52/8i8uJkjr9DYwXIPnM/plwI6W7ezItLGqzt7X2G2nXuYSfsIJdkwwj/g9DG1LkcGJI/dDoA==
 
 hmac-drbg@^1.0.0:
   version "1.0.1"
@@ -6202,11 +6202,6 @@ neo-async@^2.5.0:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.1.tgz#ac27ada66167fa8849a6addd837f6b189ad2081c"
   integrity sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw==
-
-net-socket-reconnect@^0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/net-socket-reconnect/-/net-socket-reconnect-0.0.9.tgz#af84d2675ca15c71f08e2c637b6988f14e41ee45"
-  integrity sha1-r4TSZ1yhXHHwjixje2mI8U5B7kU=
 
 net-socket@^1.1.0:
   version "1.1.0"
